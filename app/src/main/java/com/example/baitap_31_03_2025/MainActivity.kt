@@ -10,31 +10,39 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var hoten: EditText = findViewById(R.id.hoten)
-        var mssv: EditText = findViewById(R.id.mssv)
-        var button_add = findViewById<Button>(R.id.button_add)
-        val items = mutableListOf<Student>(
-            Student("Nguyen Tuan Dat","20225278"),
-            Student("Hoang Duc Khai","20225341"),
-            Student("Ngo Trung Hieu","20225923")
+        val hoten: EditText = findViewById(R.id.hoten)
+        val mssv: EditText = findViewById(R.id.mssv)
+        val buttonAdd = findViewById<Button>(R.id.button_add)
+
+        val items = mutableListOf(
+            Student("Nguyen Tuan Dat", "20225278"),
+            Student("Hoang Duc Khai", "20225341"),
+            Student("Ngo Trung Hieu", "20225923")
         )
 
-        val adapter = StudentAdapter(items)
-        val listView = findViewById<ListView>(R.id.listview)
-        listView.adapter = adapter
+        val recyclerView = findViewById<RecyclerView>(R.id.recycle_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = NewAdapter(items)
+        recyclerView.adapter = adapter
 
-        button_add.setOnClickListener {
-            var item1:String = hoten.text.toString()
-            var item2:String = mssv.text.toString()
-            items.addFirst(Student(item1,item2))
-            val adapter = StudentAdapter(items)
-            listView.adapter = adapter
+        buttonAdd.setOnClickListener {
+            val name = hoten.text.toString()
+            val id = mssv.text.toString()
+            if (name.isNotEmpty() && id.isNotEmpty()) {
+                items.add(0, Student(name, id)) // thêm vào đầu danh sách
+                adapter.notifyItemInserted(0)
+                recyclerView.scrollToPosition(0)
+                hoten.text.clear()
+                mssv.text.clear()
+            }
         }
 
 
